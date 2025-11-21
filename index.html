@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>OWASP Demo App</title>
+<style>
+body {
+    font-family: Arial;
+    max-width: 700px;
+    margin: 50px auto;
+}
+.box {
+    padding: 15px;
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+}
+</style>
+</head>
+<body>
+
+<h1>🔥 OWASP Vulnerable Demo App 🔥</h1>
+
+<div class="box">
+    <h2>1. XSS - Can you execute some code?</h2>
+    <form action="/comment" method="POST">
+        <textarea name="text" rows="4" cols="50" placeholder="Write a comment, or try an XSS payload..."></textarea><br><br>
+        <button>Submit</button>
+    </form>
+    <br>
+    <button onclick="alert('JavaSCRIPT is pretty cool')">Hint</button>
+</div>
+
+<div class="box">
+    <h2>2. Broken Access Control - Access Admin Panel</h2>
+    
+    <!-- UI hides this for non-admin users -->
+    <button id="adminBtn" style="display:none;" onclick="location.href='/admin'">
+        Go to Admin Panel
+    </button>
+
+    <p><i>(Front-end says you're not an admin, so no button for you! 🤡)</i></p>
+    <button onclick="alert('Sometimes URLs do more than buttons...')">Hint</button>
+
+    <script>
+    // Fake role logic (THIS is the access control mistake!)
+    const userIsAdmin = false;
+    
+    // Hide the admin button based on front-end logic
+    if (userIsAdmin) {
+        document.getElementById('adminBtn').style.display = 'inline-block';
+    }
+    </script>
+    
+</div>
+
+<div class="box">
+    <h2>3. SQL Injection - Get all values from DB table</h2>
+    <input id="q" placeholder="Search Apple, Banana...">
+    <button onclick="search()">Search</button>
+    <button onclick="alert('Does 1=1? OR?')">Hint</button>
+
+    <pre id="result"></pre>
+</div>
+
+<script>
+function search() {
+    fetch("/search?q=" + document.getElementById("q").value)
+      .then(r => r.json())
+      .then(data => result.textContent = JSON.stringify(data, null, 2));
+}
+</script>
+
+</body>
+</html>
